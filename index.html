@@ -56,8 +56,9 @@
   }
   header .date{
     font-family:'IBM Plex Mono',monospace;
-    font-size:12px;
+    font-size:11.5px;
     color:var(--ink-soft);
+    text-align:right;
   }
   .card{
     background:var(--card);
@@ -110,29 +111,7 @@
   }
   .btn-primary{background:var(--pine);color:#fff;width:100%;}
   .btn-primary:active{background:var(--pine-deep);}
-  .btn-add{background:var(--pine-deep);color:#fff;padding:10px 16px;white-space:nowrap;}
-  .inline-form{display:flex;gap:8px;align-items:flex-end;margin-bottom:12px;}
-  .inline-form .row{flex:1;margin-bottom:0;}
-  .item-list{display:flex;flex-direction:column;gap:6px;}
-  .item{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:#FAFBF9;
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:9px 12px;
-    font-size:13.5px;
-  }
-  .item .kcal{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--pine-deep);}
-  .item button.del{
-    background:none;
-    color:#B4574A;
-    font-size:12px;
-    font-weight:600;
-    padding:2px 6px;
-  }
-  .empty-hint{font-size:13px;color:var(--ink-soft);padding:6px 2px;}
+  .save-msg{font-size:12px;color:var(--pine);text-align:center;min-height:16px;margin-top:6px;}
 
   /* 시그니처: 저울(balance beam) */
   .beam-wrap{padding:6px 4px 2px;}
@@ -159,44 +138,60 @@
     box-shadow:0 2px 6px rgba(0,0,0,0.18);
     border:3px solid #fff;
   }
-  .balance-result{
-    text-align:center;
-    padding:14px 10px 4px;
-  }
-  .balance-result .big{
-    font-family:'Fraunces',serif;
-    font-weight:700;
-    font-size:34px;
-    letter-spacing:-0.02em;
-  }
-  .balance-result .label{
-    font-size:12.5px;
-    color:var(--ink-soft);
-    margin-top:2px;
-  }
+  .balance-result{text-align:center;padding:14px 10px 4px;}
+  .balance-result .big{font-family:'Fraunces',serif;font-weight:700;font-size:34px;letter-spacing:-0.02em;}
+  .balance-result .label{font-size:12.5px;color:var(--ink-soft);margin-top:2px;}
   .stat-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13.5px;}
   .stat-row:last-child{border-bottom:none;}
   .stat-row .v{font-family:'IBM Plex Mono',monospace;font-weight:600;}
-  .tabs{display:flex;gap:6px;margin-bottom:16px;}
+
+  .tabs{display:flex;gap:5px;margin-bottom:16px;}
   .tab-btn{
     flex:1;
     background:var(--card);
     border:1px solid var(--line);
     color:var(--ink-soft);
     font-weight:700;
-    padding:9px 6px;
+    padding:9px 4px;
     border-radius:10px;
-    font-size:13px;
+    font-size:12.5px;
   }
   .tab-btn.active{background:var(--pine-deep);color:#fff;border-color:var(--pine-deep);}
   .hidden{display:none;}
-  .save-msg{font-size:12px;color:var(--pine);text-align:center;min-height:16px;margin-top:6px;}
+
+  /* 인바디 스타일 버튼 입력 카운터 */
+  .meal-block{margin-bottom:16px;}
+  .meal-block:last-child{margin-bottom:0;}
+  .meal-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+  .meal-head .name{font-weight:700;font-size:14px;}
+  .meal-head .val{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:17px;color:var(--pine-deep);}
+  .btn-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;}
+  .btn-row button{padding:10px 2px;font-size:13px;}
+  .btn-plus{background:var(--pine);color:#fff;}
+  .btn-plus:active{background:var(--pine-deep);}
+  .btn-minus{background:#FBEEE1;color:var(--surplus);border:1px solid #F0D9BE;}
+  .btn-minus:active{background:#F5E1C8;}
+  .btn-reset{background:#FAFBF9;color:var(--ink-soft);border:1px solid var(--line);grid-column:span 4;margin-top:6px;font-size:12px;padding:7px;}
+  .divider{height:1px;background:var(--line);margin:14px 0;}
+
+  .weight-graph-card canvas,.weight-graph-card svg{width:100%;height:auto;display:block;}
+  .graph-empty{font-size:13px;color:var(--ink-soft);padding:30px 10px;text-align:center;}
+  .graph-legend{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);margin-top:6px;}
+  .graph-stats{display:flex;gap:8px;margin-bottom:14px;}
+  .graph-stat{
+    flex:1;background:#FAFBF9;border:1px solid var(--line);border-radius:10px;
+    padding:10px 8px;text-align:center;
+  }
+  .graph-stat .l{font-size:11px;color:var(--ink-soft);}
+  .graph-stat .v{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:16px;color:var(--pine-deep);margin-top:2px;}
+
   .history-list{display:flex;flex-direction:column;gap:8px;}
   .hist-item{
     background:#FAFBF9;border:1px solid var(--line);border-radius:10px;
-    padding:10px 12px;font-size:13px;display:flex;justify-content:space-between;
+    padding:10px 12px;font-size:12.5px;display:flex;justify-content:space-between;gap:6px;
   }
-  .hist-item .d{font-family:'IBM Plex Mono',monospace;color:var(--ink-soft);}
+  .hist-item .d{font-family:'IBM Plex Mono',monospace;color:var(--ink-soft);white-space:nowrap;}
+  .empty-hint{font-size:13px;color:var(--ink-soft);padding:6px 2px;}
   footer{text-align:center;font-size:11.5px;color:var(--ink-soft);padding:20px 0 4px;}
 </style>
 </head>
@@ -210,6 +205,7 @@
   <div class="tabs">
     <button class="tab-btn active" data-tab="today">오늘</button>
     <button class="tab-btn" data-tab="profile">내 정보</button>
+    <button class="tab-btn" data-tab="graph">그래프</button>
     <button class="tab-btn" data-tab="history">기록</button>
   </div>
 
@@ -218,9 +214,7 @@
     <div class="card">
       <h2>⚖ 오늘의 밸런스</h2>
       <div class="beam-wrap">
-        <div class="beam-numbers">
-          <span>적자</span><span>균형</span><span>흑자</span>
-        </div>
+        <div class="beam-numbers"><span>적자</span><span>균형</span><span>흑자</span></div>
         <div class="beam-track">
           <div class="beam-center"></div>
           <div class="beam-marker" id="beamMarker" style="left:50%;background:var(--ink-soft);"></div>
@@ -235,35 +229,34 @@
         <div class="stat-row"><span>활동대사량(TDEE)</span><span class="v" id="statTDEE">–</span></div>
         <div class="stat-row"><span>+ 운동 소모</span><span class="v" id="statExercise">–</span></div>
         <div class="stat-row"><span>= 오늘 총 소모</span><span class="v" id="statTotalOut">–</span></div>
-        <div class="stat-row"><span>섭취 칼로리</span><span class="v" id="statIntake">–</span></div>
+        <div class="stat-row"><span>섭취 칼로리 합계</span><span class="v" id="statIntake">–</span></div>
       </div>
     </div>
 
     <div class="card">
       <h2>🍚 섭취 칼로리</h2>
-      <div class="inline-form">
-        <div class="row"><label>음식/식사</label><input id="intakeName" placeholder="예: 김밥"></div>
-        <div class="row" style="max-width:80px;"><label>kcal</label><input id="intakeKcal" type="number" inputmode="numeric"></div>
-        <button class="btn-add" onclick="addItem('intake')">추가</button>
-      </div>
-      <div class="item-list" id="intakeList"></div>
+      <div id="mealBlocks"></div>
     </div>
 
     <div class="card">
-      <h2>🏃 운동 기록</h2>
-      <div class="inline-form">
-        <div class="row"><label>운동</label><input id="exName" placeholder="예: 러닝 30분"></div>
-        <div class="row" style="max-width:80px;"><label>kcal</label><input id="exKcal" type="number" inputmode="numeric"></div>
-        <button class="btn-add" onclick="addItem('exercise')">추가</button>
+      <h2>🏃 운동 소모</h2>
+      <div class="meal-block">
+        <div class="meal-head"><span class="name">오늘 운동</span><span class="val" id="exVal">0 kcal</span></div>
+        <div class="btn-row">
+          <button class="btn-plus" onclick="adjust('exercise',100)">+100</button>
+          <button class="btn-plus" onclick="adjust('exercise',10)">+10</button>
+          <button class="btn-minus" onclick="adjust('exercise',-10)">-10</button>
+          <button class="btn-minus" onclick="adjust('exercise',-100)">-100</button>
+          <button class="btn-reset" onclick="resetField('exercise')">초기화</button>
+        </div>
       </div>
-      <div class="item-list" id="exerciseList"></div>
     </div>
 
     <div class="card">
-      <h2>⚖ 오늘 체중</h2>
-      <div class="inline-form">
-        <div class="row"><label>몸무게 (kg)</label><input id="todayWeight" type="number" step="0.1" inputmode="decimal"></div>
-        <button class="btn-add" onclick="saveTodayWeight()">저장</button>
+      <h2>⚖ 오늘 아침 체중</h2>
+      <div class="row" style="display:flex;gap:8px;align-items:flex-end;">
+        <div style="flex:1;"><label>몸무게 (kg)</label><input id="todayWeight" type="number" step="0.1" inputmode="decimal"></div>
+        <button class="btn-plus" style="padding:11px 16px;" onclick="saveTodayWeight()">저장</button>
       </div>
       <div class="save-msg" id="weightMsg"></div>
     </div>
@@ -278,10 +271,7 @@
         <div class="row"><label>몸무게 (kg)</label><input id="pWeight" type="number" step="0.1"></div>
         <div class="row"><label>나이</label><input id="pAge" type="number"></div>
         <div class="row"><label>성별</label>
-          <select id="pGender">
-            <option value="male">남성</option>
-            <option value="female">여성</option>
-          </select>
+          <select id="pGender"><option value="male">남성</option><option value="female">여성</option></select>
         </div>
       </div>
       <div class="row">
@@ -303,8 +293,18 @@
         BMR은 Mifflin-St Jeor 공식으로 계산합니다.<br>
         남성: 10×체중 + 6.25×키 − 5×나이 + 5<br>
         여성: 10×체중 + 6.25×키 − 5×나이 − 161<br>
-        TDEE = BMR × 활동계수
+        TDEE = BMR × 활동계수<br><br>
+        하루 기준은 <b>새벽 6시</b>에 초기화됩니다. 자정을 넘긴 회식/야식은 전날 기록으로 계산돼요.
       </div>
+    </div>
+  </div>
+
+  <!-- 그래프 탭 -->
+  <div id="tab-graph" class="hidden">
+    <div class="card weight-graph-card">
+      <h2>📈 체중 변화</h2>
+      <div class="graph-stats" id="graphStats"></div>
+      <div id="graphContainer"><div class="graph-empty">불러오는 중...</div></div>
     </div>
   </div>
 
@@ -312,62 +312,67 @@
   <div id="tab-history" class="hidden">
     <div class="card">
       <h2>지난 기록</h2>
-      <div class="history-list" id="historyList">
-        <div class="empty-hint">기록을 불러오는 중...</div>
-      </div>
+      <div class="history-list" id="historyList"><div class="empty-hint">불러오는 중...</div></div>
     </div>
   </div>
 
-  <footer>기록은 이 앱 안에 자동 저장됩니다</footer>
+  <footer>기록은 이 기기의 브라우저에 저장됩니다 · 하루 기준 새벽 6시</footer>
 </div>
 
 <script>
-const todayStr = () => {
-  const d = new Date();
-  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-};
-const TODAY = todayStr();
-document.getElementById('todayLabel').textContent = TODAY;
-
-let profile = null;
-let dayLog = { intake: [], exercise: [], weight: null };
-
-// 일반 웹(로컬스토리지) 기반 저장소 헬퍼
+/* ---------- 저장소 (localStorage 기반) ---------- */
 const STORE_PREFIX = 'balance-app:';
 async function storeGet(key){
-  try{
-    const raw = localStorage.getItem(STORE_PREFIX + key);
-    return raw === null ? null : { value: raw };
-  }catch(e){ return null; }
+  try{ const raw = localStorage.getItem(STORE_PREFIX + key); return raw === null ? null : { value: raw }; }
+  catch(e){ return null; }
 }
 async function storeSet(key, value){
-  try{
-    localStorage.setItem(STORE_PREFIX + key, value);
-    return { key, value };
-  }catch(e){ return null; }
+  try{ localStorage.setItem(STORE_PREFIX + key, value); return { key, value }; }
+  catch(e){ return null; }
 }
 async function storeListKeys(prefix){
   try{
     const keys = [];
     for(let i=0;i<localStorage.length;i++){
       const k = localStorage.key(i);
-      if(k && k.startsWith(STORE_PREFIX + prefix)){
-        keys.push(k.slice(STORE_PREFIX.length));
-      }
+      if(k && k.startsWith(STORE_PREFIX + prefix)) keys.push(k.slice(STORE_PREFIX.length));
     }
     return { keys };
   }catch(e){ return { keys: [] }; }
 }
 
+/* ---------- 새벽 6시 기준 날짜 ---------- */
+function getLogDate(){
+  const now = new Date();
+  const shifted = new Date(now.getTime() - 6*60*60*1000); // 6시간 당겨서 계산 -> 06:00 이전은 전날
+  return shifted.getFullYear()+'-'+String(shifted.getMonth()+1).padStart(2,'0')+'-'+String(shifted.getDate()).padStart(2,'0');
+}
+const TODAY = getLogDate();
+const now = new Date();
+document.getElementById('todayLabel').textContent =
+  '기록 날짜 ' + TODAY + ' · ' + String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+
+const MEALS = [
+  {key:'breakfast', label:'아침'},
+  {key:'lunch', label:'점심'},
+  {key:'dinner', label:'저녁'}
+];
+
+let profile = null;
+let dayLog = { breakfast:0, lunch:0, dinner:0, exercise:0, weight:null };
+
+/* ---------- 탭 ---------- */
 function switchTab(name){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
-  ['today','profile','history'].forEach(t=>{
+  ['today','profile','graph','history'].forEach(t=>{
     document.getElementById('tab-'+t).classList.toggle('hidden', t!==name);
   });
   if(name==='history') renderHistory();
+  if(name==='graph') renderGraph();
 }
 document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click', ()=>switchTab(b.dataset.tab)));
 
+/* ---------- 프로필 ---------- */
 async function loadProfile(){
   try{
     const res = await storeGet('profile');
@@ -381,7 +386,6 @@ async function loadProfile(){
     document.getElementById('pActivity').value = profile.activity ?? '1.375';
   }
 }
-
 async function saveProfile(){
   const height = parseFloat(document.getElementById('pHeight').value);
   const weight = parseFloat(document.getElementById('pWeight').value);
@@ -406,58 +410,61 @@ async function saveProfile(){
   renderSummary();
 }
 
+/* ---------- 오늘 기록 ---------- */
+function renderMealBlocks(){
+  const container = document.getElementById('mealBlocks');
+  container.innerHTML = MEALS.map((m,i)=>`
+    <div class="meal-block">
+      <div class="meal-head"><span class="name">${m.label}</span><span class="val" id="val-${m.key}">0 kcal</span></div>
+      <div class="btn-row">
+        <button class="btn-plus" onclick="adjust('${m.key}',100)">+100</button>
+        <button class="btn-plus" onclick="adjust('${m.key}',10)">+10</button>
+        <button class="btn-minus" onclick="adjust('${m.key}',-10)">-10</button>
+        <button class="btn-minus" onclick="adjust('${m.key}',-100)">-100</button>
+        <button class="btn-reset" onclick="resetField('${m.key}')">초기화</button>
+      </div>
+    </div>
+    ${i < MEALS.length-1 ? '<div class="divider"></div>' : ''}
+  `).join('');
+}
+
 async function loadDayLog(){
   try{
     const res = await storeGet('log:'+TODAY);
     if(res && res.value) dayLog = JSON.parse(res.value);
-  }catch(e){ dayLog = { intake: [], exercise: [], weight: null }; }
-  if(!dayLog.intake) dayLog.intake = [];
-  if(!dayLog.exercise) dayLog.exercise = [];
+  }catch(e){ /* keep default */ }
+  dayLog.breakfast = dayLog.breakfast || 0;
+  dayLog.lunch = dayLog.lunch || 0;
+  dayLog.dinner = dayLog.dinner || 0;
+  dayLog.exercise = dayLog.exercise || 0;
   document.getElementById('todayWeight').value = dayLog.weight ?? '';
-  renderItems();
+  renderFields();
 }
 
 async function persistDayLog(){
-  try{
-    await storeSet('log:'+TODAY, JSON.stringify(dayLog));
-  }catch(e){ console.error('저장 실패', e); }
+  try{ await storeSet('log:'+TODAY, JSON.stringify(dayLog)); }
+  catch(e){ console.error('저장 실패', e); }
 }
 
-function addItem(kind){
-  const nameEl = document.getElementById(kind==='intake' ? 'intakeName':'exName');
-  const kcalEl = document.getElementById(kind==='intake' ? 'intakeKcal':'exKcal');
-  const name = nameEl.value.trim();
-  const kcal = parseFloat(kcalEl.value);
-  if(!name || !kcal){ return; }
-  const list = kind==='intake' ? dayLog.intake : dayLog.exercise;
-  list.push({id: Date.now()+Math.random().toString(16).slice(2), name, kcal});
-  nameEl.value=''; kcalEl.value='';
-  renderItems();
+function adjust(field, amount){
+  dayLog[field] = Math.max(0, (dayLog[field]||0) + amount);
+  renderFields();
+  persistDayLog();
+}
+function resetField(field){
+  dayLog[field] = 0;
+  renderFields();
   persistDayLog();
 }
 
-function removeItem(kind, id){
-  const list = kind==='intake' ? dayLog.intake : dayLog.exercise;
-  const idx = list.findIndex(i=>i.id===id);
-  if(idx>-1) list.splice(idx,1);
-  renderItems();
-  persistDayLog();
-}
-
-function renderItems(){
-  const iList = document.getElementById('intakeList');
-  const eList = document.getElementById('exerciseList');
-  iList.innerHTML = dayLog.intake.length ? dayLog.intake.map(i=>
-    `<div class="item"><span>${escapeHtml(i.name)}</span><span><span class="kcal">${i.kcal} kcal</span> <button class="del" onclick="removeItem('intake','${i.id}')">삭제</button></span></div>`
-  ).join('') : '<div class="empty-hint">아직 기록이 없어요.</div>';
-  eList.innerHTML = dayLog.exercise.length ? dayLog.exercise.map(i=>
-    `<div class="item"><span>${escapeHtml(i.name)}</span><span><span class="kcal">${i.kcal} kcal</span> <button class="del" onclick="removeItem('exercise','${i.id}')">삭제</button></span></div>`
-  ).join('') : '<div class="empty-hint">아직 기록이 없어요.</div>';
+function renderFields(){
+  MEALS.forEach(m=>{
+    const el = document.getElementById('val-'+m.key);
+    if(el) el.textContent = dayLog[m.key] + ' kcal';
+  });
+  const exEl = document.getElementById('exVal');
+  if(exEl) exEl.textContent = dayLog.exercise + ' kcal';
   renderSummary();
-}
-
-function escapeHtml(s){
-  return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 function calcBMR(p){
@@ -466,8 +473,8 @@ function calcBMR(p){
 }
 
 function renderSummary(){
-  const intakeTotal = dayLog.intake.reduce((s,i)=>s+Number(i.kcal),0);
-  const exerciseTotal = dayLog.exercise.reduce((s,i)=>s+Number(i.kcal),0);
+  const intakeTotal = dayLog.breakfast + dayLog.lunch + dayLog.dinner;
+  const exerciseTotal = dayLog.exercise;
 
   if(!profile){
     document.getElementById('statBMR').textContent = '–';
@@ -494,20 +501,15 @@ function renderSummary(){
   const label = document.getElementById('balanceLabel');
   const rounded = Math.round(diff);
   if(rounded < -30){
-    big.textContent = rounded + ' kcal';
-    big.style.color = 'var(--deficit)';
+    big.textContent = rounded + ' kcal'; big.style.color = 'var(--deficit)';
     label.textContent = '오늘은 적자예요 (체중 감소 방향)';
   } else if(rounded > 30){
-    big.textContent = '+'+rounded + ' kcal';
-    big.style.color = 'var(--surplus)';
+    big.textContent = '+'+rounded + ' kcal'; big.style.color = 'var(--surplus)';
     label.textContent = '오늘은 흑자예요 (체중 증가 방향)';
   } else {
-    big.textContent = rounded + ' kcal';
-    big.style.color = 'var(--ink)';
+    big.textContent = rounded + ' kcal'; big.style.color = 'var(--ink)';
     label.textContent = '오늘은 거의 균형 상태예요';
   }
-
-  // 저울 마커 위치 (-1000 ~ +1000 kcal 범위를 0~100%로 매핑)
   const clamped = Math.max(-1000, Math.min(1000, diff));
   const pct = 50 + (clamped/1000)*45;
   const marker = document.getElementById('beamMarker');
@@ -525,32 +527,101 @@ async function saveTodayWeight(){
   msg.style.color = 'var(--pine)';
 }
 
+/* ---------- 기록 탭 ---------- */
 async function renderHistory(){
   const el = document.getElementById('historyList');
   el.innerHTML = '<div class="empty-hint">불러오는 중...</div>';
   try{
     const listRes = await storeListKeys('log:');
-    const keys = (listRes && listRes.keys) ? listRes.keys.sort().reverse() : [];
+    const keys = (listRes && listRes.keys) ? keysSortedDesc(listRes.keys) : [];
     if(!keys.length){ el.innerHTML = '<div class="empty-hint">아직 기록이 없어요.</div>'; return; }
     const rows = [];
     for(const k of keys){
-      try{
-        const r = await storeGet(k);
-        if(!r || !r.value) continue;
-        const d = JSON.parse(r.value);
-        const date = k.replace('log:','');
-        const intakeTotal = (d.intake||[]).reduce((s,i)=>s+Number(i.kcal),0);
-        const exTotal = (d.exercise||[]).reduce((s,i)=>s+Number(i.kcal),0);
-        rows.push(`<div class="hist-item"><span class="d">${date}</span><span>섭취 ${intakeTotal} · 운동 ${exTotal}${d.weight?' · '+d.weight+'kg':''}</span></div>`);
-      }catch(e){}
+      const r = await storeGet(k);
+      if(!r || !r.value) continue;
+      const d = JSON.parse(r.value);
+      const date = k.replace('log:','');
+      const intakeTotal = (d.breakfast||0)+(d.lunch||0)+(d.dinner||0);
+      rows.push(`<div class="hist-item"><span class="d">${date}</span><span>섭취 ${intakeTotal} · 운동 ${d.exercise||0}${d.weight?' · '+d.weight+'kg':''}</span></div>`);
     }
     el.innerHTML = rows.length ? rows.join('') : '<div class="empty-hint">아직 기록이 없어요.</div>';
   }catch(e){
     el.innerHTML = '<div class="empty-hint">기록을 불러오지 못했어요.</div>';
   }
 }
+function keysSortedDesc(keys){ return keys.slice().sort().reverse(); }
 
+/* ---------- 그래프 탭 (체중 변화 선형 그래프) ---------- */
+async function renderGraph(){
+  const container = document.getElementById('graphContainer');
+  const statsEl = document.getElementById('graphStats');
+  container.innerHTML = '<div class="graph-empty">불러오는 중...</div>';
+  statsEl.innerHTML = '';
+  try{
+    const listRes = await storeListKeys('log:');
+    const keys = (listRes && listRes.keys) ? keys_sorted_asc(listRes.keys) : [];
+    const points = [];
+    for(const k of keys){
+      const r = await storeGet(k);
+      if(!r || !r.value) continue;
+      const d = JSON.parse(r.value);
+      if(d.weight != null && !isNaN(d.weight)){
+        points.push({ date: k.replace('log:',''), weight: parseFloat(d.weight) });
+      }
+    }
+    if(points.length === 0){
+      container.innerHTML = '<div class="graph-empty">아직 체중 기록이 없어요.<br>"오늘" 탭에서 체중을 저장해보세요.</div>';
+      return;
+    }
+    const first = points[0].weight;
+    const last = points[points.length-1].weight;
+    const min = Math.min(...points.map(p=>p.weight));
+    const max = Math.max(...points.map(p=>p.weight));
+    const change = last - first;
+    statsEl.innerHTML = `
+      <div class="graph-stat"><div class="l">최근</div><div class="v">${last}kg</div></div>
+      <div class="graph-stat"><div class="l">변화</div><div class="v" style="color:${change<=0?'var(--deficit)':'var(--surplus)'}">${change>0?'+':''}${change.toFixed(1)}kg</div></div>
+      <div class="graph-stat"><div class="l">최저~최고</div><div class="v">${min}~${max}</div></div>
+    `;
+    container.innerHTML = buildSvgChart(points, min, max);
+  }catch(e){
+    container.innerHTML = '<div class="graph-empty">그래프를 불러오지 못했어요.</div>';
+  }
+}
+function keys_sorted_asc(keys){ return keys.slice().sort(); }
+
+function buildSvgChart(points, min, max){
+  const w = 320, h = 190, padTop = 16, padBottom = 28, padLeft = 34, padRight = 12;
+  let lo = min, hi = max;
+  if(lo === hi){ lo -= 1; hi += 1; } else { const pad=(hi-lo)*0.12; lo-=pad; hi+=pad; }
+  const plotW = w - padLeft - padRight;
+  const plotH = h - padTop - padBottom;
+  const stepX = points.length > 1 ? plotW/(points.length-1) : 0;
+  const coords = points.map((p,i)=>{
+    const x = padLeft + i*stepX;
+    const y = padTop + plotH - ((p.weight - lo)/(hi-lo))*plotH;
+    return {x,y,...p};
+  });
+  const polyPoints = coords.map(c=>`${c.x.toFixed(1)},${c.y.toFixed(1)}`).join(' ');
+  const circles = coords.map((c,i)=>`<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${i===coords.length-1?4.5:3}" fill="${i===coords.length-1?'#274A3F':'#3D6B5C'}"/>`).join('');
+  // x축 라벨: 처음/중간/마지막만 표시 (점이 많을 때 겹치지 않도록)
+  const labelIdx = points.length <=1 ? [0] : points.length<=4 ? coords.map((_,i)=>i) : [0, Math.floor((coords.length-1)/2), coords.length-1];
+  const xLabels = labelIdx.map(i=>`<text x="${coords[i].x.toFixed(1)}" y="${h-8}" font-size="9.5" fill="#5B6660" text-anchor="middle" font-family="IBM Plex Mono, monospace">${coords[i].date.slice(5)}</text>`).join('');
+  const yTop = `<text x="4" y="${padTop+4}" font-size="9.5" fill="#5B6660" font-family="IBM Plex Mono, monospace">${hi.toFixed(1)}</text>`;
+  const yBottom = `<text x="4" y="${padTop+plotH}" font-size="9.5" fill="#5B6660" font-family="IBM Plex Mono, monospace">${lo.toFixed(1)}</text>`;
+  const gridTop = `<line x1="${padLeft}" y1="${padTop}" x2="${w-padRight}" y2="${padTop}" stroke="#DCE2DA" stroke-width="1" stroke-dasharray="2,3"/>`;
+  const gridBottom = `<line x1="${padLeft}" y1="${padTop+plotH}" x2="${w-padRight}" y2="${padTop+plotH}" stroke="#DCE2DA" stroke-width="1" stroke-dasharray="2,3"/>`;
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
+    ${gridTop}${gridBottom}
+    <polyline points="${polyPoints}" fill="none" stroke="#3D6B5C" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    ${circles}
+    ${xLabels}${yTop}${yBottom}
+  </svg>`;
+}
+
+/* ---------- 초기화 ---------- */
 (async function init(){
+  renderMealBlocks();
   await loadProfile();
   await loadDayLog();
   renderSummary();
