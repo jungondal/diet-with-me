@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>밸런스 — 오늘의 에너지 기록</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#274A3F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="밸런스">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F4F0;
+    --card:#FFFFFF;
+    --ink:#1F2A24;
+    --ink-soft:#5B6660;
+    --line:#DCE2DA;
+    --pine:#3D6B5C;
+    --pine-deep:#274A3F;
+    --deficit:#2F6F6B;
+    --surplus:#C77B3B;
+    --deficit-bg:#E7F1EF;
+    --surplus-bg:#FBEEE1;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Manrope',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:60px;
+  }
+  .wrap{max-width:480px;margin:0 auto;padding:20px 18px 0;}
+  header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding:8px 2px 18px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:20px;
+  }
+  header h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:26px;
+    margin:0;
+    color:var(--pine-deep);
+    letter-spacing:-0.02em;
+  }
+  header .date{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px;
+    margin-bottom:16px;
+  }
+  .card h2{
+    font-family:'Fraunces',serif;
+    font-size:16px;
+    font-weight:600;
+    margin:0 0 14px;
+    color:var(--pine-deep);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+    display:block;
+  }
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  label{font-size:12.5px;color:var(--ink-soft);display:block;margin-bottom:4px;}
+  input,select{
+    width:100%;
+    padding:10px 11px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    font-family:'Manrope',sans-serif;
+    font-size:14.5px;
+    background:#FAFBF9;
+    color:var(--ink);
+  }
+  input:focus,select:focus{outline:2px solid var(--pine);outline-offset:1px;}
+  .row{margin-bottom:10px;}
+  button{
+    font-family:'Manrope',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    border:none;
+    border-radius:10px;
+    padding:11px 14px;
+    cursor:pointer;
+  }
+  .btn-primary{background:var(--pine);color:#fff;width:100%;}
+  .btn-primary:active{background:var(--pine-deep);}
+  .btn-add{background:var(--pine-deep);color:#fff;padding:10px 16px;white-space:nowrap;}
+  .inline-form{display:flex;gap:8px;align-items:flex-end;margin-bottom:12px;}
+  .inline-form .row{flex:1;margin-bottom:0;}
+  .item-list{display:flex;flex-direction:column;gap:6px;}
+  .item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#FAFBF9;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:9px 12px;
+    font-size:13.5px;
+  }
+  .item .kcal{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--pine-deep);}
+  .item button.del{
+    background:none;
+    color:#B4574A;
+    font-size:12px;
+    font-weight:600;
+    padding:2px 6px;
+  }
+  .empty-hint{font-size:13px;color:var(--ink-soft);padding:6px 2px;}
+
+  /* 시그니처: 저울(balance beam) */
+  .beam-wrap{padding:6px 4px 2px;}
+  .beam-numbers{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);margin-bottom:8px;}
+  .beam-track{
+    position:relative;
+    height:14px;
+    background:linear-gradient(90deg, var(--deficit-bg), var(--line) 50%, var(--surplus-bg));
+    border-radius:8px;
+    border:1px solid var(--line);
+    overflow:visible;
+    margin-bottom:14px;
+  }
+  .beam-center{
+    position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:var(--ink-soft);opacity:0.4;
+  }
+  .beam-marker{
+    position:absolute;
+    top:50%;
+    width:26px;height:26px;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 6px rgba(0,0,0,0.18);
+    border:3px solid #fff;
+  }
+  .balance-result{
+    text-align:center;
+    padding:14px 10px 4px;
+  }
+  .balance-result .big{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:34px;
+    letter-spacing:-0.02em;
+  }
+  .balance-result .label{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+  .stat-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13.5px;}
+  .stat-row:last-child{border-bottom:none;}
+  .stat-row .v{font-family:'IBM Plex Mono',monospace;font-weight:600;}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;}
+  .tab-btn{
+    flex:1;
+    background:var(--card);
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    font-weight:700;
+    padding:9px 6px;
+    border-radius:10px;
+    font-size:13px;
+  }
+  .tab-btn.active{background:var(--pine-deep);color:#fff;border-color:var(--pine-deep);}
+  .hidden{display:none;}
+  .save-msg{font-size:12px;color:var(--pine);text-align:center;min-height:16px;margin-top:6px;}
+  .history-list{display:flex;flex-direction:column;gap:8px;}
+  .hist-item{
+    background:#FAFBF9;border:1px solid var(--line);border-radius:10px;
+    padding:10px 12px;font-size:13px;display:flex;justify-content:space-between;
+  }
+  .hist-item .d{font-family:'IBM Plex Mono',monospace;color:var(--ink-soft);}
+  footer{text-align:center;font-size:11.5px;color:var(--ink-soft);padding:20px 0 4px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>밸런스</h1>
+    <div class="date" id="todayLabel"></div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="today">오늘</button>
+    <button class="tab-btn" data-tab="profile">내 정보</button>
+    <button class="tab-btn" data-tab="history">기록</button>
+  </div>
+
+  <!-- 오늘 탭 -->
+  <div id="tab-today">
+    <div class="card">
+      <h2>⚖ 오늘의 밸런스</h2>
+      <div class="beam-wrap">
+        <div class="beam-numbers">
+          <span>적자</span><span>균형</span><span>흑자</span>
+        </div>
+        <div class="beam-track">
+          <div class="beam-center"></div>
+          <div class="beam-marker" id="beamMarker" style="left:50%;background:var(--ink-soft);"></div>
+        </div>
+      </div>
+      <div class="balance-result">
+        <div class="big" id="balanceBig">–</div>
+        <div class="label" id="balanceLabel">프로필을 먼저 입력해주세요</div>
+      </div>
+      <div style="margin-top:10px;">
+        <div class="stat-row"><span>기초대사량(BMR)</span><span class="v" id="statBMR">–</span></div>
+        <div class="stat-row"><span>활동대사량(TDEE)</span><span class="v" id="statTDEE">–</span></div>
+        <div class="stat-row"><span>+ 운동 소모</span><span class="v" id="statExercise">–</span></div>
+        <div class="stat-row"><span>= 오늘 총 소모</span><span class="v" id="statTotalOut">–</span></div>
+        <div class="stat-row"><span>섭취 칼로리</span><span class="v" id="statIntake">–</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🍚 섭취 칼로리</h2>
+      <div class="inline-form">
+        <div class="row"><label>음식/식사</label><input id="intakeName" placeholder="예: 김밥"></div>
+        <div class="row" style="max-width:80px;"><label>kcal</label><input id="intakeKcal" type="number" inputmode="numeric"></div>
+        <button class="btn-add" onclick="addItem('intake')">추가</button>
+      </div>
+      <div class="item-list" id="intakeList"></div>
+    </div>
+
+    <div class="card">
+      <h2>🏃 운동 기록</h2>
+      <div class="inline-form">
+        <div class="row"><label>운동</label><input id="exName" placeholder="예: 러닝 30분"></div>
+        <div class="row" style="max-width:80px;"><label>kcal</label><input id="exKcal" type="number" inputmode="numeric"></div>
+        <button class="btn-add" onclick="addItem('exercise')">추가</button>
+      </div>
+      <div class="item-list" id="exerciseList"></div>
+    </div>
+
+    <div class="card">
+      <h2>⚖ 오늘 체중</h2>
+      <div class="inline-form">
+        <div class="row"><label>몸무게 (kg)</label><input id="todayWeight" type="number" step="0.1" inputmode="decimal"></div>
+        <button class="btn-add" onclick="saveTodayWeight()">저장</button>
+      </div>
+      <div class="save-msg" id="weightMsg"></div>
+    </div>
+  </div>
+
+  <!-- 프로필 탭 -->
+  <div id="tab-profile" class="hidden">
+    <div class="card">
+      <h2>내 프로필</h2>
+      <div class="grid2">
+        <div class="row"><label>키 (cm)</label><input id="pHeight" type="number"></div>
+        <div class="row"><label>몸무게 (kg)</label><input id="pWeight" type="number" step="0.1"></div>
+        <div class="row"><label>나이</label><input id="pAge" type="number"></div>
+        <div class="row"><label>성별</label>
+          <select id="pGender">
+            <option value="male">남성</option>
+            <option value="female">여성</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <label>활동량</label>
+        <select id="pActivity">
+          <option value="1.2">거의 운동 안 함 (좌식)</option>
+          <option value="1.375">가벼운 운동 (주 1~3회)</option>
+          <option value="1.55">보통 운동 (주 3~5회)</option>
+          <option value="1.725">활발한 운동 (주 6~7회)</option>
+          <option value="1.9">매우 활발 (매일 강도 높음)</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="saveProfile()">저장하기</button>
+      <div class="save-msg" id="profileMsg"></div>
+    </div>
+    <div class="card">
+      <span class="eyebrow">계산 방식</span>
+      <div style="font-size:13px;color:var(--ink-soft);line-height:1.6;">
+        BMR은 Mifflin-St Jeor 공식으로 계산합니다.<br>
+        남성: 10×체중 + 6.25×키 − 5×나이 + 5<br>
+        여성: 10×체중 + 6.25×키 − 5×나이 − 161<br>
+        TDEE = BMR × 활동계수
+      </div>
+    </div>
+  </div>
+
+  <!-- 기록 탭 -->
+  <div id="tab-history" class="hidden">
+    <div class="card">
+      <h2>지난 기록</h2>
+      <div class="history-list" id="historyList">
+        <div class="empty-hint">기록을 불러오는 중...</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>기록은 이 앱 안에 자동 저장됩니다</footer>
+</div>
+
+<script>
+const todayStr = () => {
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+};
+const TODAY = todayStr();
+document.getElementById('todayLabel').textContent = TODAY;
+
+let profile = null;
+let dayLog = { intake: [], exercise: [], weight: null };
+
+function switchTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  ['today','profile','history'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('hidden', t!==name);
+  });
+  if(name==='history') renderHistory();
+}
+document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click', ()=>switchTab(b.dataset.tab)));
+
+async function loadProfile(){
+  try{
+    const res = await window.storage.get('profile', false);
+    if(res && res.value) profile = JSON.parse(res.value);
+  }catch(e){ profile = null; }
+  if(profile){
+    document.getElementById('pHeight').value = profile.height ?? '';
+    document.getElementById('pWeight').value = profile.weight ?? '';
+    document.getElementById('pAge').value = profile.age ?? '';
+    document.getElementById('pGender').value = profile.gender ?? 'male';
+    document.getElementById('pActivity').value = profile.activity ?? '1.375';
+  }
+}
+
+async function saveProfile(){
+  const height = parseFloat(document.getElementById('pHeight').value);
+  const weight = parseFloat(document.getElementById('pWeight').value);
+  const age = parseInt(document.getElementById('pAge').value);
+  const gender = document.getElementById('pGender').value;
+  const activity = document.getElementById('pActivity').value;
+  const msg = document.getElementById('profileMsg');
+  if(!height || !weight || !age){
+    msg.textContent = '키, 몸무게, 나이를 모두 입력해주세요.';
+    msg.style.color = '#B4574A';
+    return;
+  }
+  profile = {height, weight, age, gender, activity};
+  try{
+    const r = await window.storage.set('profile', JSON.stringify(profile), false);
+    msg.textContent = r ? '저장되었습니다.' : '저장에 실패했어요.';
+    msg.style.color = r ? 'var(--pine)' : '#B4574A';
+  }catch(e){
+    msg.textContent = '저장 중 오류가 발생했어요.';
+    msg.style.color = '#B4574A';
+  }
+  renderSummary();
+}
+
+async function loadDayLog(){
+  try{
+    const res = await window.storage.get('log:'+TODAY, false);
+    if(res && res.value) dayLog = JSON.parse(res.value);
+  }catch(e){ dayLog = { intake: [], exercise: [], weight: null }; }
+  if(!dayLog.intake) dayLog.intake = [];
+  if(!dayLog.exercise) dayLog.exercise = [];
+  document.getElementById('todayWeight').value = dayLog.weight ?? '';
+  renderItems();
+}
+
+async function persistDayLog(){
+  try{
+    await window.storage.set('log:'+TODAY, JSON.stringify(dayLog), false);
+  }catch(e){ console.error('저장 실패', e); }
+}
+
+function addItem(kind){
+  const nameEl = document.getElementById(kind==='intake' ? 'intakeName':'exName');
+  const kcalEl = document.getElementById(kind==='intake' ? 'intakeKcal':'exKcal');
+  const name = nameEl.value.trim();
+  const kcal = parseFloat(kcalEl.value);
+  if(!name || !kcal){ return; }
+  const list = kind==='intake' ? dayLog.intake : dayLog.exercise;
+  list.push({id: Date.now()+Math.random().toString(16).slice(2), name, kcal});
+  nameEl.value=''; kcalEl.value='';
+  renderItems();
+  persistDayLog();
+}
+
+function removeItem(kind, id){
+  const list = kind==='intake' ? dayLog.intake : dayLog.exercise;
+  const idx = list.findIndex(i=>i.id===id);
+  if(idx>-1) list.splice(idx,1);
+  renderItems();
+  persistDayLog();
+}
+
+function renderItems(){
+  const iList = document.getElementById('intakeList');
+  const eList = document.getElementById('exerciseList');
+  iList.innerHTML = dayLog.intake.length ? dayLog.intake.map(i=>
+    `<div class="item"><span>${escapeHtml(i.name)}</span><span><span class="kcal">${i.kcal} kcal</span> <button class="del" onclick="removeItem('intake','${i.id}')">삭제</button></span></div>`
+  ).join('') : '<div class="empty-hint">아직 기록이 없어요.</div>';
+  eList.innerHTML = dayLog.exercise.length ? dayLog.exercise.map(i=>
+    `<div class="item"><span>${escapeHtml(i.name)}</span><span><span class="kcal">${i.kcal} kcal</span> <button class="del" onclick="removeItem('exercise','${i.id}')">삭제</button></span></div>`
+  ).join('') : '<div class="empty-hint">아직 기록이 없어요.</div>';
+  renderSummary();
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function calcBMR(p){
+  const base = 10*p.weight + 6.25*p.height - 5*p.age;
+  return p.gender==='male' ? base+5 : base-161;
+}
+
+function renderSummary(){
+  const intakeTotal = dayLog.intake.reduce((s,i)=>s+Number(i.kcal),0);
+  const exerciseTotal = dayLog.exercise.reduce((s,i)=>s+Number(i.kcal),0);
+
+  if(!profile){
+    document.getElementById('statBMR').textContent = '–';
+    document.getElementById('statTDEE').textContent = '–';
+    document.getElementById('statExercise').textContent = exerciseTotal + ' kcal';
+    document.getElementById('statTotalOut').textContent = '–';
+    document.getElementById('statIntake').textContent = intakeTotal + ' kcal';
+    document.getElementById('balanceBig').textContent = '–';
+    document.getElementById('balanceLabel').textContent = "'내 정보' 탭에서 프로필을 먼저 입력해주세요";
+    return;
+  }
+  const bmr = calcBMR(profile);
+  const tdee = bmr * parseFloat(profile.activity);
+  const totalOut = tdee + exerciseTotal;
+  const diff = intakeTotal - totalOut;
+
+  document.getElementById('statBMR').textContent = Math.round(bmr) + ' kcal';
+  document.getElementById('statTDEE').textContent = Math.round(tdee) + ' kcal';
+  document.getElementById('statExercise').textContent = exerciseTotal + ' kcal';
+  document.getElementById('statTotalOut').textContent = Math.round(totalOut) + ' kcal';
+  document.getElementById('statIntake').textContent = intakeTotal + ' kcal';
+
+  const big = document.getElementById('balanceBig');
+  const label = document.getElementById('balanceLabel');
+  const rounded = Math.round(diff);
+  if(rounded < -30){
+    big.textContent = rounded + ' kcal';
+    big.style.color = 'var(--deficit)';
+    label.textContent = '오늘은 적자예요 (체중 감소 방향)';
+  } else if(rounded > 30){
+    big.textContent = '+'+rounded + ' kcal';
+    big.style.color = 'var(--surplus)';
+    label.textContent = '오늘은 흑자예요 (체중 증가 방향)';
+  } else {
+    big.textContent = rounded + ' kcal';
+    big.style.color = 'var(--ink)';
+    label.textContent = '오늘은 거의 균형 상태예요';
+  }
+
+  // 저울 마커 위치 (-1000 ~ +1000 kcal 범위를 0~100%로 매핑)
+  const clamped = Math.max(-1000, Math.min(1000, diff));
+  const pct = 50 + (clamped/1000)*45;
+  const marker = document.getElementById('beamMarker');
+  marker.style.left = pct + '%';
+  marker.style.background = rounded < -30 ? 'var(--deficit)' : rounded > 30 ? 'var(--surplus)' : 'var(--ink-soft)';
+}
+
+async function saveTodayWeight(){
+  const w = parseFloat(document.getElementById('todayWeight').value);
+  const msg = document.getElementById('weightMsg');
+  if(!w){ msg.textContent='몸무게를 입력해주세요.'; msg.style.color='#B4574A'; return; }
+  dayLog.weight = w;
+  await persistDayLog();
+  msg.textContent = '저장되었습니다.';
+  msg.style.color = 'var(--pine)';
+}
+
+async function renderHistory(){
+  const el = document.getElementById('historyList');
+  el.innerHTML = '<div class="empty-hint">불러오는 중...</div>';
+  try{
+    const listRes = await window.storage.list('log:', false);
+    const keys = (listRes && listRes.keys) ? listRes.keys.sort().reverse() : [];
+    if(!keys.length){ el.innerHTML = '<div class="empty-hint">아직 기록이 없어요.</div>'; return; }
+    const rows = [];
+    for(const k of keys){
+      try{
+        const r = await window.storage.get(k, false);
+        if(!r || !r.value) continue;
+        const d = JSON.parse(r.value);
+        const date = k.replace('log:','');
+        const intakeTotal = (d.intake||[]).reduce((s,i)=>s+Number(i.kcal),0);
+        const exTotal = (d.exercise||[]).reduce((s,i)=>s+Number(i.kcal),0);
+        rows.push(`<div class="hist-item"><span class="d">${date}</span><span>섭취 ${intakeTotal} · 운동 ${exTotal}${d.weight?' · '+d.weight+'kg':''}</span></div>`);
+      }catch(e){}
+    }
+    el.innerHTML = rows.length ? rows.join('') : '<div class="empty-hint">아직 기록이 없어요.</div>';
+  }catch(e){
+    el.innerHTML = '<div class="empty-hint">기록을 불러오지 못했어요.</div>';
+  }
+}
+
+(async function init(){
+  await loadProfile();
+  await loadDayLog();
+  renderSummary();
+})();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW 등록 실패:', err));
+  });
+}
+</script>
+</body>
+</html>
