@@ -332,6 +332,33 @@ document.getElementById('todayLabel').textContent = TODAY;
 let profile = null;
 let dayLog = { intake: [], exercise: [], weight: null };
 
+// 일반 웹(로컬스토리지) 기반 저장소 헬퍼
+const STORE_PREFIX = 'balance-app:';
+async function storeGet(key){
+  try{
+    const raw = localStorage.getItem(STORE_PREFIX + key);
+    return raw === null ? null : { value: raw };
+  }catch(e){ return null; }
+}
+async function storeSet(key, value){
+  try{
+    localStorage.setItem(STORE_PREFIX + key, value);
+    return { key, value };
+  }catch(e){ return null; }
+}
+async function storeListKeys(prefix){
+  try{
+    const keys = [];
+    for(let i=0;i<localStorage.length;i++){
+      const k = localStorage.key(i);
+      if(k && k.startsWith(STORE_PREFIX + prefix)){
+        keys.push(k.slice(STORE_PREFIX.length));
+      }
+    }
+    return { keys };
+  }catch(e){ return { keys: [] }; }
+}
+
 function switchTab(name){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
   ['today','profile','history'].forEach(t=>{
@@ -343,7 +370,7 @@ document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click', ()=
 
 async function loadProfile(){
   try{
-    const res = await window.storage.get('profile', false);
+    const res = await storeGet('profile');
     if(res && res.value) profile = JSON.parse(res.value);
   }catch(e){ profile = null; }
   if(profile){
@@ -369,7 +396,7 @@ async function saveProfile(){
   }
   profile = {height, weight, age, gender, activity};
   try{
-    const r = await window.storage.set('profile', JSON.stringify(profile), false);
+    const r = await storeSet('profile', JSON.stringify(profile));
     msg.textContent = r ? '저장되었습니다.' : '저장에 실패했어요.';
     msg.style.color = r ? 'var(--pine)' : '#B4574A';
   }catch(e){
@@ -381,7 +408,7 @@ async function saveProfile(){
 
 async function loadDayLog(){
   try{
-    const res = await window.storage.get('log:'+TODAY, false);
+    const res = await storeGet('log:'+TODAY);
     if(res && res.value) dayLog = JSON.parse(res.value);
   }catch(e){ dayLog = { intake: [], exercise: [], weight: null }; }
   if(!dayLog.intake) dayLog.intake = [];
@@ -392,7 +419,7 @@ async function loadDayLog(){
 
 async function persistDayLog(){
   try{
-    await window.storage.set('log:'+TODAY, JSON.stringify(dayLog), false);
+    await storeSet('log:'+TODAY, JSON.stringify(dayLog));
   }catch(e){ console.error('저장 실패', e); }
 }
 
@@ -502,13 +529,13 @@ async function renderHistory(){
   const el = document.getElementById('historyList');
   el.innerHTML = '<div class="empty-hint">불러오는 중...</div>';
   try{
-    const listRes = await window.storage.list('log:', false);
+    const listRes = await storeListKeys('log:');
     const keys = (listRes && listRes.keys) ? listRes.keys.sort().reverse() : [];
     if(!keys.length){ el.innerHTML = '<div class="empty-hint">아직 기록이 없어요.</div>'; return; }
     const rows = [];
     for(const k of keys){
       try{
-        const r = await window.storage.get(k, false);
+        const r = await storeGet(k);
         if(!r || !r.value) continue;
         const d = JSON.parse(r.value);
         const date = k.replace('log:','');
