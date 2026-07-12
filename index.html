@@ -324,6 +324,15 @@
       <div class="graph-stats" id="graphStats"></div>
       <div id="graphContainer"><div class="graph-empty">불러오는 중...</div></div>
     </div>
+    <div class="card weight-graph-card">
+      <h2>🔥 칼로리 밸런스 추이</h2>
+      <div class="graph-stats" id="balanceGraphStats"></div>
+      <div id="balanceGraphContainer"><div class="graph-empty">불러오는 중...</div></div>
+      <div class="graph-legend" style="justify-content:flex-start;gap:14px;margin-top:10px;">
+        <span style="display:flex;align-items:center;gap:5px;"><span style="width:9px;height:9px;border-radius:2px;background:var(--deficit);display:inline-block;"></span>적자</span>
+        <span style="display:flex;align-items:center;gap:5px;"><span style="width:9px;height:9px;border-radius:2px;background:var(--surplus);display:inline-block;"></span>흑자</span>
+      </div>
+    </div>
   </div>
 
   <!-- 기록 탭 -->
@@ -632,8 +641,85 @@ async function renderGraph(){
   }catch(e){
     container.innerHTML = '<div class="graph-empty">그래프를 불러오지 못했어요.</div>';
   }
+  renderBalanceGraph();
 }
 function keys_sorted_asc(keys){ return keys.slice().sort(); }
+
+/* ---------- 그래프 탭 (칼로리 밸런스 막대 그래프) ---------- */
+async function renderBalanceGraph(){
+  const container = document.getElementById('balanceGraphContainer');
+  const statsEl = document.getElementById('balanceGraphStats');
+  container.innerHTML = '<div class="graph-empty">불러오는 중...</div>';
+  statsEl.innerHTML = '';
+  if(!profile){
+    container.innerHTML = '<div class="graph-empty">"내 정보" 탭에서 프로필을 먼저 입력해주세요.<br>밸런스 계산에 TDEE가 필요해요.</div>';
+    return;
+  }
+  try{
+    const bmrResult = calcBMR(profile);
+    const tdee = bmrResult.value * parseFloat(profile.activity);
+    const listRes = await storeListKeys('log:');
+    const keys = (listRes && listRes.keys) ? keys_sorted_asc(listRes.keys) : [];
+    const points = [];
+    for(const k of keys){
+      const r = await storeGet(k);
+      if(!r || !r.value) continue;
+      const d = JSON.parse(r.value);
+      const breakfast = d.breakfast||0, lunch = d.lunch||0, dinner = d.dinner||0, exercise = d.exercise||0;
+      const intakeTotal = breakfast+lunch+dinner;
+      if(intakeTotal===0 && exercise===0) continue; // 그 날 기록이 전혀 없으면 제외
+      const totalOut = tdee + exercise;
+      const diff = intakeTotal - totalOut;
+      points.push({ date: k.replace('log:',''), diff });
+    }
+    if(points.length === 0){
+      container.innerHTML = '<div class="graph-empty">아직 섭취/운동 기록이 없어요.<br>"오늘" 탭에서 기록을 추가해보세요.</div>';
+      return;
+    }
+    const avg = points.reduce((s,p)=>s+p.diff,0)/points.length;
+    const deficitDays = points.filter(p=>p.diff < -30).length;
+    const surplusDays = points.filter(p=>p.diff > 30).length;
+    statsEl.innerHTML = `
+      <div class="graph-stat"><div class="l">평균</div><div class="v" style="color:${avg<=0?'var(--deficit)':'var(--surplus)'}">${avg>0?'+':''}${Math.round(avg)}</div></div>
+      <div class="graph-stat"><div class="l">적자일</div><div class="v" style="color:var(--deficit);">${deficitDays}일</div></div>
+      <div class="graph-stat"><div class="l">흑자일</div><div class="v" style="color:var(--surplus);">${surplusDays}일</div></div>
+    `;
+    container.innerHTML = buildBarChart(points);
+  }catch(e){
+    container.innerHTML = '<div class="graph-empty">그래프를 불러오지 못했어요.</div>';
+  }
+}
+
+function buildBarChart(points){
+  const w = 320, h = 190, padTop = 16, padBottom = 28, padLeft = 34, padRight = 12;
+  const plotW = w - padLeft - padRight;
+  const plotH = h - padTop - padBottom;
+  const maxAbs = Math.max(500, ...points.map(p=>Math.abs(p.diff))) * 1.15;
+  const zeroY = padTop + plotH/2;
+  const barSlot = points.length > 0 ? plotW/points.length : plotW;
+  const barW = Math.max(3, Math.min(22, barSlot*0.55));
+  const bars = points.map((p,i)=>{
+    const cx = padLeft + barSlot*i + barSlot/2;
+    const barH = (Math.abs(p.diff)/maxAbs) * (plotH/2);
+    const y = p.diff >= 0 ? zeroY - barH : zeroY;
+    const color = p.diff < -30 ? 'var(--deficit)' : p.diff > 30 ? 'var(--surplus)' : '#B7C0BA';
+    return `<rect x="${(cx-barW/2).toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(1.5,barH).toFixed(1)}" rx="2" fill="${color.startsWith('var')?getComputedColor(color):color}"/>`;
+  }).join('');
+  const labelIdx = points.length <=1 ? [0] : points.length<=4 ? points.map((_,i)=>i) : [0, Math.floor((points.length-1)/2), points.length-1];
+  const xLabels = labelIdx.map(i=>{
+    const cx = padLeft + barSlot*i + barSlot/2;
+    return `<text x="${cx.toFixed(1)}" y="${h-8}" font-size="9.5" fill="#5B6660" text-anchor="middle" font-family="IBM Plex Mono, monospace">${points[i].date.slice(5)}</text>`;
+  }).join('');
+  const zeroLine = `<line x1="${padLeft}" y1="${zeroY}" x2="${w-padRight}" y2="${zeroY}" stroke="#5B6660" stroke-width="1" opacity="0.4"/>`;
+  const zeroLabel = `<text x="4" y="${zeroY+3}" font-size="9.5" fill="#5B6660" font-family="IBM Plex Mono, monospace">0</text>`;
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
+    ${zeroLine}${bars}${xLabels}${zeroLabel}
+  </svg>`;
+}
+function getComputedColor(varName){
+  const map = { 'var(--deficit)':'#2F6F6B', 'var(--surplus)':'#C77B3B' };
+  return map[varName] || '#B7C0BA';
+}
 
 function buildSvgChart(points, min, max){
   const w = 320, h = 190, padTop = 16, padBottom = 28, padLeft = 34, padRight = 12;
