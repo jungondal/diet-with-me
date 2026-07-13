@@ -676,13 +676,13 @@ async function renderBalanceGraph(){
       container.innerHTML = '<div class="graph-empty">아직 섭취/운동 기록이 없어요.<br>"오늘" 탭에서 기록을 추가해보세요.</div>';
       return;
     }
-    const avg = points.reduce((s,p)=>s+p.diff,0)/points.length;
-    const deficitDays = points.filter(p=>p.diff < -30).length;
-    const surplusDays = points.filter(p=>p.diff > 30).length;
+    const currentMonth = TODAY.slice(0,7); // YYYY-MM
+    const monthPoints = points.filter(p => p.date.startsWith(currentMonth));
+    const monthlyTotal = monthPoints.reduce((s,p)=>s+p.diff,0);
+    const monthlyDays = monthPoints.length;
     statsEl.innerHTML = `
-      <div class="graph-stat"><div class="l">평균</div><div class="v" style="color:${avg<=0?'var(--deficit)':'var(--surplus)'}">${avg>0?'+':''}${Math.round(avg)}</div></div>
-      <div class="graph-stat"><div class="l">적자일</div><div class="v" style="color:var(--deficit);">${deficitDays}일</div></div>
-      <div class="graph-stat"><div class="l">흑자일</div><div class="v" style="color:var(--surplus);">${surplusDays}일</div></div>
+      <div class="graph-stat"><div class="l">이번달 누적</div><div class="v" style="color:${monthlyTotal<=0?'var(--deficit)':'var(--surplus)'}">${monthlyTotal>0?'+':''}${Math.round(monthlyTotal)}</div></div>
+      <div class="graph-stat"><div class="l">누적일수</div><div class="v">${monthlyDays}일</div></div>
     `;
     container.innerHTML = buildBarChart(points);
   }catch(e){
