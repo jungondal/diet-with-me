@@ -1,4 +1,4 @@
-const CACHE_NAME = 'balance-app-v5';
+const CACHE_NAME = 'balance-app-v6';
 const ASSETS = [
   './index.html',
   './manifest.json',
@@ -23,21 +23,16 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// 캐시 우선, 없으면 네트워크 (앱 화면은 오프라인에서도 뜨게)
+// 네트워크 우선: 인터넷 되면 항상 최신 버전을 먼저 받아옴, 오프라인일 때만 캐시 사용
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      return (
-        cached ||
-        fetch(event.request)
-          .then((res) => {
-            const resClone = res.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, resClone));
-            return res;
-          })
-          .catch(() => cached)
-      );
-    })
+    fetch(event.request)
+      .then((res) => {
+        const resClone = res.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, resClone));
+        return res;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
